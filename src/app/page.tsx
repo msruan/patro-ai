@@ -63,8 +63,8 @@ export default function Home() {
     <div className="h-screen mx-96 ">
       <div className="h-full flex flex-col gap-3">
         <ChatMessageList>
-          {messages.map((message) => (
-            <ChatBubble variant={message.variant}>
+          {messages.map((message, index) => (
+            <ChatBubble key={index} variant={message.variant}>
               <ChatBubbleAvatar src={message.avatar_url} />
               <ChatBubbleMessage variant={message.variant}>
                 {message.content}
@@ -72,15 +72,19 @@ export default function Home() {
             </ChatBubble>
           ))}
         </ChatMessageList>
-          <ChatInput
-            onKeyDown={(e) => e.key === "Enter" && handleClick()}
-            ref={inputRef}
-            placeholder="Type your message here..."
-          />
-          <Button onClick={handleClick} size="sm" className="ml-auto gap-1.5 mb-12">
-            Send Message
-            <CornerDownLeft className="size-3.5" />
-          </Button>
+        <ChatInput
+          onKeyDown={(e) => e.key === "Enter" && handleClick()}
+          ref={inputRef}
+          placeholder="Type your message here..."
+        />
+        <Button
+          onClick={handleClick}
+          size="sm"
+          className="ml-auto gap-1.5 mb-12"
+        >
+          Send Message
+          <CornerDownLeft className="size-3.5" />
+        </Button>
       </div>
     </div>
   );
