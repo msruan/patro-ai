@@ -1,5 +1,4 @@
 "use client";
-import { Chat } from "@/actions/Chat";
 import { Button } from "@/components/ui/button";
 import {
   ChatBubble,
@@ -13,7 +12,7 @@ import { Label } from "@/components/ui/label";
 import { MountJson } from "@/utils/mountJson";
 import { CornerDownLeft, SendHorizonal } from "lucide-react";
 import { useRef, useState } from "react";
-
+import { chat } from "@/services/chat";
 const ia =
   "https://i.pinimg.com/736x/8f/87/39/8f8739fbfae6ccde444f6bcd69007276.jpg";
 const asa =
@@ -37,12 +36,11 @@ export default function Home() {
         body: image,
         method: "POST",
       });
-      console.log("RESPOSTA DA IMAGEM",res)
+      console.log("RESPOSTA DA IMAGEM", res);
     }
   }
 
   async function handleClick() {
-    Chat();
     const value = inputRef.current.value;
     console.log(messages);
     if (value) {
@@ -57,22 +55,18 @@ export default function Home() {
       ];
       setMessages(newMessages);
       inputRef.current.value = "";
-      const res = await fetch("http://localhost:3000/api/chat2", {
-        body: JSON.stringify(MountJson(value, messages)),
-        method: "POST",
-      });
-      if (res.ok) {
-        const body = await res.json();
-        setMessages((oldValue) => [
-          ...oldValue,
-          {
-            avatar_url: ia,
-            content: body.text,
-            timestamp: new Date(),
-            variant: "received",
-          },
-        ]);
-      }
+      const body: { text: string } = await chat(
+        JSON.stringify(MountJson(value, messages))
+      );
+      setMessages((oldValue) => [
+        ...oldValue,
+        {
+          avatar_url: ia,
+          content: body.text,
+          timestamp: new Date(),
+          variant: "received",
+        },
+      ]);
     }
   }
 
@@ -109,7 +103,7 @@ export default function Home() {
             </Button>
           </div>
 
-          <div>
+          {/* <div>
             <Label>Send picture</Label>
             <Input id="picture" type="file" ref={imageRef} />
             <Button
@@ -119,7 +113,7 @@ export default function Home() {
             >
               <SendHorizonal size={18} />
             </Button>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

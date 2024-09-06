@@ -7,7 +7,7 @@ export const POST = async (request: Request) => {
   try {
     const data: ChatRequest = await request.json();
     const prompt = data.prompt;
-
+    console.log("chegou no bakc");
     const chat: ChatSession = model.startChat({
       history: data.history,
     });
@@ -22,9 +22,7 @@ export const POST = async (request: Request) => {
         "Content-Type": "application/json",
       },
     });
-
   } catch (err) {
-    
     console.log(err);
     return NextResponse.error();
   }
