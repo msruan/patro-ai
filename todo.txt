@@ -1,9 +1,15 @@
-OK - Consertar erro das mensagens que a gente envia sumindo
-- Estilizar
-- Fazer a gemini lembrar das mensagens anteriores
+TODO
 - Favicon
-- Upload de imagens
-- Mandar imagens pra Gemini 
-- Trocar o input por uma textarea que aumente de tamanho
 - Animar fundo
-- Fazer a logica pra botar contexto na IA
+- Streaming para respostas mais rápidas
+- Respostas em português e formatar o resultado. Talvez pedir pra ele o resultado em html e usar innerContent
+- Setar isLoading pro balaozinho da resposta ficar carregando
+- Trocar o input por uma textarea que aumente de tamanho
+
+DOING
+(Bianca) - Upload de imagens e enviar pra Gemini
+
+DONE
+(Ruan) - process.env não tá funcionando?
+(Ruan) - Consertar erro das mensagens que a gente envia sumindo
+(Meireles) - Fazer a logica pra botar contexto na IA
