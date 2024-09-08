@@ -5,6 +5,7 @@ TODO
 - Respostas em português e formatar o resultado. Talvez pedir pra ele o resultado em html e usar innerContent
 - Setar isLoading pro balaozinho da resposta ficar carregando
 - Trocar o input por uma textarea que aumente de tamanho
+- Refatorar o código e todo o input de imagem + texto
 
 DOING
 (Bianca) - Upload de imagens e enviar pra Gemini
