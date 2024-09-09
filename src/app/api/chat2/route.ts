@@ -9,11 +9,16 @@ export const POST = async (request: Request) => {
     console.log("chegou no bakc");
 
     const data: ChatRequest = await request.json();
-    const context =  await readContext(data.about === "ads");
+
+    const context = await readContext(data.about === "ads");
+
     const prompt = data.prompt;
 
     const chat: ChatSession = model.startChat({
       history: [...context, ...data.history],
+      generationConfig: {
+        temperature: 2,
+      },
     });
 
     let result = await chat.sendMessage(prompt);
