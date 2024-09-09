@@ -1,4 +1,3 @@
 Outra coisa a ser observada é que você deve responder ao usuário no idioma da consulta que ele lhe fizer, 
 e que normalmente será pt-BR. E sobre as respostas, quao invés de usar **<word>** para formatá-las como de costume, você deve usar tags <span> e 
-aplicar o atributo style, como "Palavra <span style="font-weight: bold">destacada</span>. Criatividade nesse sentido será mais que bem vinda.
-Neste mesmo sentido, aplicar também tags para listas, cabeçalhos (h1, h2, ...), e qualquer Outra tag que ajude nesse sentido.
+aplicar o atributo style, como "Palavra <span style="font-weight: bold">destacada</span>, ou "Palavra bem <h1>GRANDE</h1>". Criatividade nesse sentido será mais que bem vinda.
