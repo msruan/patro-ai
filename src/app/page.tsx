@@ -57,6 +57,13 @@ export default function Home() {
           timestamp: new Date(),
           variant: "sent",
         },
+        {
+          avatar_url: ia,
+          content: value || "",
+          timestamp: new Date(),
+          variant: "received",
+          isLoading: true,
+        },
       ];
       setMessages(newMessages);
       imageRef.current.value = "";
@@ -73,13 +80,13 @@ export default function Home() {
       const data = await res.json();
       const { text } = data;
 
-      setMessages((oldMessages) => [
-        ...oldMessages,
+      setMessages((oldValue) => [
+        ...oldValue.slice(0, oldValue.length - 1),
         {
           avatar_url: ia,
           content: text,
           timestamp: new Date(),
-          variant: "received"
+          variant: "received",
         },
       ]);
     } else if (value) {
