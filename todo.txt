@@ -22,6 +22,7 @@ DONE
 (Ruan) - process.env não tá funcionando?
 (Ruan) - Consertar erro das mensagens que a gente envia sumindo
 (Meireles) - Fazer a logica pra botar contexto na IA
+(Bianca) - Upload de imagens e enviar pra Gemini
 
 DROP
 - Streaming para respostas mais rápidas
