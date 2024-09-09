@@ -73,7 +73,7 @@ export default function Home() {
     }
     setIsLoading(true);
     if (imageFile) {
-
+      inputRef.current!.textArea.value = "";
 
       const newMessages: Message[] = [
         ...messages,
@@ -118,11 +118,11 @@ export default function Home() {
           variant: "received",
         },
       ]);
-      inputRef.current!.textArea.value = "";
+
       scroll();
 
     } else if (value) {
-
+      inputRef.current!.textArea.value = "";
       const newMessages: Message[] = [
         ...messages,
         {
@@ -140,7 +140,6 @@ export default function Home() {
         },
       ];
       setMessages(newMessages);
-      inputRef.current!.textArea.value = "";
 
       const body: { text: string } = await chat(
         JSON.stringify(MountJson(value, messages, chatMode))
