@@ -6,8 +6,7 @@ export async function context(ads: boolean = false) {
   const fileManager = new GoogleAIFileManager(
     process.env.GOOGLE_GENERATIVE_AI_API_KEY!
   );
-  const pathToJsonFile = "./context.json";
-
+  const pathToJsonFile = process.cwd() + "/context.json";
   let systemInstruction: string = purgeChar(
     readFileSync(process.cwd() + "/system-instruction.txt").toString(),
     "\n"
