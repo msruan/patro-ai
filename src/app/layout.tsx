@@ -5,7 +5,7 @@ import "./styles.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Patro AI",
+  title: "AI Patro",
   description: "Seu melhor pior chatbot!",
 };
 
