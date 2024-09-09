@@ -2,6 +2,7 @@
 import { model } from "@/lib/model";
 import fs from "fs";
 import path from "path";
+import {context as readContext} from "@/lib/context"
 
 function fileToGenerativePart(path: string, mimeType: string) {
   return {
@@ -20,6 +21,7 @@ if (!fs.existsSync(uploadDir)) {
 
 export const POST = async (request: Request) => {
   try {
+    const context =  await readContext(false);
     const formData = await request.formData();
     const file = formData.get("file") as File;
     const prompt = formData.get("prompt") as string;
