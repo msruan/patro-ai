@@ -1,7 +1,6 @@
 TODO
 - Streaming para respostas mais rápidas
 - Favicon
-- Animar fundo
 - Estilizar scrollbar
 - Ajustar temperatura pra deixar mais criativo nas do ADS.
 - Consertar scroll pra ir pro final.
@@ -11,6 +10,7 @@ DOING
 (Bianca) - Upload de imagens e enviar pra Gemini
 
 DONE
+(OK) - Animar fundo
 (Ruan) - Setar isLoading pro balaozinho da resposta ficar carregando
 (Ruan) - Trocar o input por uma textarea que aumente de tamanho
 (Ruan) - Cached content, fazer o JSON pra mandar mtas mentiras sobre o ADS, 
