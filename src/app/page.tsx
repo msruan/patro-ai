@@ -18,7 +18,7 @@ import { chat } from "@/services/chat";
 import { MountJson } from "@/utils/mountJson";
 import DOMPurify from "dompurify";
 import { CornerDownLeft } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { RefObject, useEffect, useRef, useState } from "react";
 import { refresh } from "./actions/refresh";
 
 const ia =
@@ -42,13 +42,21 @@ export default function Home() {
   const [messages, setMessages] = useState([] as Message[]);
   const [chatMode, setChatMode] = useState<"ads" | "general">("general");
   const imageRef = useRef({} as HTMLInputElement);
+  const chatRef = useRef<HTMLDivElement>(null);
+
+
+  function scroll() {
+    if (chatRef.current) {
+      chatRef.current.scrollTop = chatRef.current.scrollHeight;
+    }
+  }
 
   async function handleSubmit() {
     const value = inputRef.current?.textArea.value;
     const imageFile = imageRef.current.files?.[0];
 
     if (imageFile) {
-      
+
       const newMessages: Message[] = [
         ...messages,
         {
@@ -66,6 +74,7 @@ export default function Home() {
         },
       ];
       setMessages(newMessages);
+
       imageRef.current.value = "";
 
       const formData = new FormData();
@@ -89,8 +98,10 @@ export default function Home() {
           variant: "received",
         },
       ]);
+      scroll();
+
     } else if (value) {
-      
+
       const newMessages: Message[] = [
         ...messages,
         {
@@ -123,13 +134,16 @@ export default function Home() {
           variant: "received",
         },
       ]);
+      scroll();
+
+
     }
   }
 
   return (
     <div className="h-screen xl:mx-96 ">
-      <div className="h-full flex flex-col gap-3 px-8">
-        <ChatMessageList>
+      <div className="h-full flex flex-col gap-3 px-8" >
+        <ChatMessageList ref={chatRef}>
           {messages.map((message, index) => (
             <ChatBubble key={index} variant={message.variant}>
               <ChatBubbleAvatar src={message.avatar_url} />
@@ -180,7 +194,7 @@ export default function Home() {
           <div className="flex items-center space-x-2">
             <Switch
               checked={chatMode === "ads"}
-              onCheckedChange={(e) =>
+              onCheckedChange={() =>
                 setChatMode(chatMode === "ads" ? "general" : "ads")
               }
               id="ads-mode"
