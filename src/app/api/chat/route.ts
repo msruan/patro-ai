@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server";
-import { model } from "@/main";
+import { model } from "@/lib/model";
 
 export const POST = async (request: Request) => {
   try {
+    // const model = await gemini();
     const prompt = await request.text();
     const result = await model.generateContent(prompt);
     const response = await result.response;
