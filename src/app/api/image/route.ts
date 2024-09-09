@@ -1,34 +1,44 @@
-import { model } from "@/main";
 
-function fileToGenerativePart(base64String: string, mimeType: string) {
+import { model } from "@/lib/model";
+import fs from "fs";
+import path from "path";
+
+function fileToGenerativePart(path: string, mimeType: string) {
   return {
     inlineData: {
-      data: base64String,
+      data: Buffer.from(fs.readFileSync(path)).toString("base64"),
       mimeType,
     },
   };
 }
 
+const uploadDir = path.join(process.cwd(), "/uploads");
+
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir, { recursive: true });
+}
+
 export const POST = async (request: Request) => {
   try {
     const formData = await request.formData();
-    const file = formData.get("file") as string;
-
+    const file = formData.get("file") as File;
     const prompt = formData.get("prompt") as string;
-    const image = fileToGenerativePart(file, "image/*");
+    
+    const filePath = path.join(uploadDir, file.name);
+    const buffer = Buffer.from(await file.arrayBuffer());
+    fs.writeFileSync(filePath, buffer);
 
-    const result = await model.generateContent([prompt,image]);
-    const response = result.response;
-    const text = response.text();
+    const imagePart = fileToGenerativePart(filePath, file.type);
 
-    return new Response(JSON.stringify({ text }), {
-      status: 200,
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    const result = await model.generateContent([prompt, imagePart]);
+    const text = result.response.text();
+
+    return new Response(JSON.stringify({ text }));
   } catch (error) {
-    console.error("Error generating response:", error);
-    return new Response("Error processing image", { status: 500 });
+    console.error(error);
+    return new Response(
+      JSON.stringify({ error: "Erro ao processar a requisição" }),
+      { status: 500 }
+    );
   }
 };
