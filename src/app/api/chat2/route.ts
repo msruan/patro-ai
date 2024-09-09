@@ -6,10 +6,12 @@ import { context as readContext } from "@/lib/context";
 
 export const POST = async (request: Request) => {
   try {
-    const context = await readContext();
-    const data: ChatRequest = await request.json();
-    const prompt = data.prompt;
     console.log("chegou no bakc");
+
+    const data: ChatRequest = await request.json();
+    const context = data.about === "ads" ? await readContext() : [];
+    const prompt = data.prompt;
+
     const chat: ChatSession = model.startChat({
       history: [...context, ...data.history],
     });

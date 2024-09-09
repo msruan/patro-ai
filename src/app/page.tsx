@@ -17,6 +17,9 @@ import DOMPurify from "dompurify";
 import { highlightWords } from "@/lib/utils";
 import { AutosizeTextAreaRef } from "@/components/ui/autosize-textarea";
 import { ChatInput } from "@/components/ui/chat/chat-input";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 const ia =
   "https://i.pinimg.com/736x/8f/87/39/8f8739fbfae6ccde444f6bcd69007276.jpg";
@@ -27,6 +30,7 @@ export type Message = {
   avatar_url: string;
   content: string;
   timestamp: Date;
+  isLoading?: boolean;
 };
 
 export default function Home() {
@@ -35,6 +39,7 @@ export default function Home() {
   }, []);
   const inputRef = useRef<AutosizeTextAreaRef>(null);
   const [messages, setMessages] = useState([] as Message[]);
+  const [chatMode, setChatMode] = useState<"ads" | "general">("general");
   const imageRef = useRef({} as HTMLInputElement);
 
   async function handleImageSubmit() {
@@ -60,14 +65,21 @@ export default function Home() {
           timestamp: new Date(),
           variant: "sent",
         },
+        {
+          avatar_url: ia,
+          content: value,
+          timestamp: new Date(),
+          variant: "received",
+          isLoading: true,
+        },
       ];
       setMessages(newMessages);
       inputRef.current!.textArea.value = "";
       const body: { text: string } = await chat(
-        JSON.stringify(MountJson(value, messages))
+        JSON.stringify(MountJson(value, messages, chatMode))
       );
       setMessages((oldValue) => [
-        ...oldValue,
+        ...oldValue.slice(0, oldValue.length - 1),
         {
           avatar_url: ia,
           content: body.text,
@@ -86,11 +98,15 @@ export default function Home() {
             <ChatBubble key={index} variant={message.variant}>
               <ChatBubbleAvatar src={message.avatar_url} />
               <ChatBubbleMessage
-                dangerouslySetInnerHTML={{
-                  __html: DOMPurify.sanitize(highlightWords(message.content)),
-                }}
+                isLoading={message?.isLoading}
                 variant={message.variant}
-              />
+              >
+                <div
+                  dangerouslySetInnerHTML={{
+                    __html: DOMPurify.sanitize(highlightWords(message.content)),
+                  }}
+                />
+              </ChatBubbleMessage>
             </ChatBubble>
           ))}
         </ChatMessageList>
@@ -108,7 +124,7 @@ export default function Home() {
           placeholder="Pergunte qualquer coisa..."
         />
 
-        <div className="flex flex-row">
+        <div className="flex justify-between">
           <div className="flex flex-row justify-center items-center h-10">
             <Button
               onClick={handleClick}
@@ -118,6 +134,17 @@ export default function Home() {
               Enviar mensagem
               <CornerDownLeft className="size-3.5" />
             </Button>
+          </div>
+
+          <div className="flex items-center space-x-2">
+            <Switch
+              checked={chatMode === "ads"}
+              onCheckedChange={(e) =>
+                setChatMode(chatMode === "ads" ? "general" : "ads")
+              }
+              id="ads-mode"
+            />
+            <Label htmlFor="ads-mode">ADS</Label>
           </div>
 
           {/* <div>
