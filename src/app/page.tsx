@@ -18,9 +18,8 @@ import { chat } from "@/services/chat";
 import { MountJson } from "@/utils/mountJson";
 import DOMPurify from "dompurify";
 import { CornerDownLeft } from "lucide-react";
-import { RefObject, useEffect, useRef, useState } from "react";
+import {  useEffect, useRef, useState } from "react";
 import { refresh } from "./actions/refresh";
-import Image from "next/image";
 
 const ia =
   "https://i.pinimg.com/736x/8f/87/39/8f8739fbfae6ccde444f6bcd69007276.jpg";
@@ -59,8 +58,6 @@ export default function Home() {
       setImagePreview(null);
     }
   }
-  const chatRef = useRef<HTMLDivElement>(null);
-
 
   function scroll() {
     if (chatRef.current) {
@@ -70,7 +67,10 @@ export default function Home() {
 
   async function handleSubmit() {
     const value = inputRef.current?.textArea.value;
-    const imageFile = imageRef.current.files?.[0];
+    let imageFile = undefined;
+    if (imageRef.current) {
+      imageFile = imageRef?.current.files?.[0];
+    }
     setIsLoading(true);
     if (imageFile) {
 
@@ -92,8 +92,9 @@ export default function Home() {
         },
       ];
       setMessages(newMessages);
-
-      imageRef.current.value = "";
+      if (imageRef.current) {
+        imageRef.current.value = "";
+      }
       setImagePreview(null); // Clear image preview
 
       const formData = new FormData();
@@ -117,10 +118,11 @@ export default function Home() {
           variant: "received",
         },
       ]);
+      inputRef.current!.textArea.value = "";
       scroll();
 
     } else if (value) {
-      
+
       const newMessages: Message[] = [
         ...messages,
         {
@@ -233,7 +235,7 @@ export default function Home() {
               <Label htmlFor="ads-mode">ADS</Label>
             </div>
             <Button
-            disabled={isLoading}
+              disabled={isLoading}
               onClick={handleSubmit}
               size="default"
               className="ml-auto gap-1.5"
@@ -243,16 +245,7 @@ export default function Home() {
             </Button>
           </div>
 
-          <div className="flex items-center space-x-2">
-            <Switch
-              checked={chatMode === "ads"}
-              onCheckedChange={() =>
-                setChatMode(chatMode === "ads" ? "general" : "ads")
-              }
-              id="ads-mode"
-            />
-            <Label htmlFor="ads-mode">ADS</Label>
-          </div>
+         
         </div>
       </div>
     </div>
