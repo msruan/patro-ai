@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import { Button } from "@/components/ui/button";
 import {
   ChatBubble,
@@ -20,6 +20,7 @@ import DOMPurify from "dompurify";
 import { CornerDownLeft } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { refresh } from "./actions/refresh";
+import Image from "next/image";
 
 const ia =
   "https://i.pinimg.com/736x/8f/87/39/8f8739fbfae6ccde444f6bcd69007276.jpg";
@@ -38,17 +39,31 @@ export default function Home() {
   useEffect(() => {
     refresh().then();
   }, []);
+
   const inputRef = useRef<AutosizeTextAreaRef>(null);
   const [messages, setMessages] = useState([] as Message[]);
   const [chatMode, setChatMode] = useState<"ads" | "general">("general");
-  const imageRef = useRef({} as HTMLInputElement);
+  const imageRef = useRef<HTMLInputElement>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+
+  function handleImageChange() {
+    if (imageRef.current?.files?.[0]) {
+      const file = imageRef.current.files[0];
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    } else {
+      setImagePreview(null);
+    }
+  }
 
   async function handleSubmit() {
     const value = inputRef.current?.textArea.value;
-    const imageFile = imageRef.current.files?.[0];
+    const imageFile = imageRef.current?.files?.[0];
 
     if (imageFile) {
-      
       const newMessages: Message[] = [
         ...messages,
         {
@@ -67,6 +82,7 @@ export default function Home() {
       ];
       setMessages(newMessages);
       imageRef.current.value = "";
+      setImagePreview(null); // Clear image preview
 
       const formData = new FormData();
       formData.append("file", imageFile);
@@ -90,7 +106,6 @@ export default function Home() {
         },
       ]);
     } else if (value) {
-      
       const newMessages: Message[] = [
         ...messages,
         {
@@ -160,13 +175,41 @@ export default function Home() {
           placeholder="Pergunte qualquer coisa..."
         />
 
-        <div className="flex justify-between w-full  mb-12">
-          <div className="flex flex-row items-center">
-            <Label>Send picture</Label>
-            <Input id="picture" type="file" ref={imageRef} className="mr-2" />
+        <div className="flex justify-between w-full mb-12">
+          <div className="flex flex-row">
+            <div className="flex flex-row items-center h-16">
+              <Input
+                id="picture"
+                type="file"
+                ref={imageRef}
+                onChange={handleImageChange}
+              />
+            </div>
+
+            {imagePreview && (
+              <div className="mb-4">
+                <div className="border-2 border-white shadow-xl rounded-lg ml-4 ">
+                  <img
+                    src={imagePreview}
+                    alt="Image preview"
+                    className="max-w-full h-16 rounded-sm"
+                  />
+                </div>
+              </div>
+            )}
           </div>
 
-          <div className="flex flex-row justify-center items-center h-10">
+          <div className="flex flex-row justify-center items-center">
+            <div className="flex items-center space-x-2 mr-10">
+              <Switch
+                checked={chatMode === "ads"}
+                onCheckedChange={(e) =>
+                  setChatMode(chatMode === "ads" ? "general" : "ads")
+                }
+                id="ads-mode"
+              />
+              <Label htmlFor="ads-mode">ADS</Label>
+            </div>
             <Button
               onClick={handleSubmit}
               size="default"
@@ -175,17 +218,6 @@ export default function Home() {
               Enviar mensagem
               <CornerDownLeft className="size-3.5" />
             </Button>
-          </div>
-
-          <div className="flex items-center space-x-2">
-            <Switch
-              checked={chatMode === "ads"}
-              onCheckedChange={(e) =>
-                setChatMode(chatMode === "ads" ? "general" : "ads")
-              }
-              id="ads-mode"
-            />
-            <Label htmlFor="ads-mode">ADS</Label>
           </div>
         </div>
       </div>
