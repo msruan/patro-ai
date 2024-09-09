@@ -7,11 +7,8 @@ export async function context(ads: boolean = false) {
     process.env.GOOGLE_GENERATIVE_AI_API_KEY!
   );
   const pathToJsonFile = "./context.json";
-  let systemInstruction: string = purgeChar(
-    readFileSync(process.cwd()+"/system-instruction.txt").toString(),
-    "\n"
-  );
-  if (ads) {
+  let systemInstruction: string = "";
+  if (!!ads) {
     systemInstruction +=
       "\n" + purgeChar(readFileSync("./ads-instruction.txt").toString(), "\n");
   }
