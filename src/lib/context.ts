@@ -6,12 +6,12 @@ export async function context() {
   const fileManager = new GoogleAIFileManager(
     process.env.GOOGLE_GENERATIVE_AI_API_KEY!
   );
-  const pathToJsonFile = process.cwd() + "/context.json";
-  const systemInstruction =
-      purgeChar(
-        readFileSync(process.cwd() + "/ads-instruction.txt").toString(),
-        "\n"
-      );
+  const pathToJsonFile = "./context.json";
+  let systemInstruction: string = "";
+  if (!!ads) {
+    systemInstruction +=
+      "\n" + purgeChar(readFileSync("./ads-instruction.txt").toString(), "\n");
+  }
   const fileResult = await fileManager.uploadFile(pathToJsonFile, {
     mimeType: "text/plain",
   });
