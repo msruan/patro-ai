@@ -1,13 +1,17 @@
 TODO
 - Favicon
 - Animar fundo
-- Streaming para respostas mais rápidas
-- Respostas em português e formatar o resultado. Talvez pedir pra ele o resultado em html e usar innerContent
+- Ajustar temperatura ra deixar mais criativo nas do ADS, consertar scroll
 - Setar isLoading pro balaozinho da resposta ficar carregando
-- Trocar o input por uma textarea que aumente de tamanho
+- Streaming para respostas mais rápidas
+- Criar uma interface para gerenciamento das infos sobre o ADS 
+    (ou fazer isso manualmente no MongoDB)
+(Ruan) - Trocar o input por uma textarea que aumente de tamanho
 
 DOING
 (Bianca) - Upload de imagens e enviar pra Gemini
+(Ruan) - Cached content, fazer o JSON pra mandar mtas mentiras sobre o ADS, 
+    respostas em PT e respostas em html pra formatar com inner content
 
 DONE
 (Ruan) - process.env não tá funcionando?

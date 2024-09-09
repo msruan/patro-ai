@@ -1,4 +1,4 @@
-import { model } from "@/main";
+import { gemini } from "@/lib/gemini";
 import { Part } from "@google/generative-ai";
 
 async function fileToGenerativePart(file) {
