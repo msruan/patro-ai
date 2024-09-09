@@ -1,4 +1,4 @@
-"use client";
+'use client'
 import { Button } from "@/components/ui/button";
 import {
   ChatBubble,
@@ -8,23 +8,24 @@ import {
 
 import { ChatMessageList } from "@/components/ui/chat/chat-message-list";
 
-import { MountJson } from "@/utils/mountJson";
-import { CornerDownLeft } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
-import { chat } from "@/services/chat";
-import { refresh } from "./actions/refresh";
-import DOMPurify from "dompurify";
-import { highlightWords } from "@/lib/utils";
 import { AutosizeTextAreaRef } from "@/components/ui/autosize-textarea";
 import { ChatInput } from "@/components/ui/chat/chat-input";
-import { Switch } from "@/components/ui/switch";
+import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { Switch } from "@/components/ui/switch";
+import { highlightWords } from "@/lib/utils";
+import { chat } from "@/services/chat";
+import { MountJson } from "@/utils/mountJson";
+import DOMPurify from "dompurify";
+import { CornerDownLeft } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { refresh } from "./actions/refresh";
 
 const ia =
   "https://i.pinimg.com/736x/8f/87/39/8f8739fbfae6ccde444f6bcd69007276.jpg";
 const asa =
   "https://i.pinimg.com/564x/15/57/74/155774f070222683c5730fce24794328.jpg";
+
 export type Message = {
   variant: "received" | "sent";
   avatar_url: string;
@@ -42,21 +43,47 @@ export default function Home() {
   const [chatMode, setChatMode] = useState<"ads" | "general">("general");
   const imageRef = useRef({} as HTMLInputElement);
 
-  async function handleImageSubmit() {
-    if (imageRef.current.files) {
-      const image = imageRef.current.files[0];
-      const res = await fetch("http://localhost:3000/api/image", {
-        body: image,
-        method: "POST",
-      });
-      console.log("RESPOSTA DA IMAGEM", res);
-    }
-  }
-
-  async function handleClick() {
+  async function handleSubmit() {
     const value = inputRef.current?.textArea.value;
-    console.log(messages);
-    if (value) {
+    const imageFile = imageRef.current.files?.[0];
+
+    if (imageFile) {
+      
+      const newMessages: Message[] = [
+        ...messages,
+        {
+          avatar_url: asa,
+          content: value || "",
+          timestamp: new Date(),
+          variant: "sent",
+        },
+      ];
+      setMessages(newMessages);
+      imageRef.current.value = "";
+
+      const formData = new FormData();
+      formData.append("file", imageFile);
+      formData.append("prompt", value || "");
+
+      const res = await fetch("http://localhost:3000/api/image", {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await res.json();
+      const { text } = data;
+
+      setMessages((oldMessages) => [
+        ...oldMessages,
+        {
+          avatar_url: ia,
+          content: text,
+          timestamp: new Date(),
+          variant: "received"
+        },
+      ]);
+    } else if (value) {
+      
       const newMessages: Message[] = [
         ...messages,
         {
@@ -75,9 +102,11 @@ export default function Home() {
       ];
       setMessages(newMessages);
       inputRef.current!.textArea.value = "";
+
       const body: { text: string } = await chat(
         JSON.stringify(MountJson(value, messages, chatMode))
       );
+
       setMessages((oldValue) => [
         ...oldValue.slice(0, oldValue.length - 1),
         {
@@ -117,19 +146,24 @@ export default function Home() {
           onKeyDown={(e) => {
             if (e.key === "Enter" && !e.shiftKey) {
               e.preventDefault();
-              handleClick();
+              handleSubmit();
             }
           }}
           textAreaRef={inputRef}
           placeholder="Pergunte qualquer coisa..."
         />
 
-        <div className="flex justify-between">
+        <div className="flex justify-between w-full  mb-12">
+          <div className="flex flex-row items-center">
+            <Label>Send picture</Label>
+            <Input id="picture" type="file" ref={imageRef} className="mr-2" />
+          </div>
+
           <div className="flex flex-row justify-center items-center h-10">
             <Button
-              onClick={handleClick}
+              onClick={handleSubmit}
               size="default"
-              className="ml-auto gap-1.5 mb-12"
+              className="ml-auto gap-1.5"
             >
               Enviar mensagem
               <CornerDownLeft className="size-3.5" />
@@ -146,18 +180,6 @@ export default function Home() {
             />
             <Label htmlFor="ads-mode">ADS</Label>
           </div>
-
-          {/* <div>
-            <Label>Send picture</Label>
-            <Input id="picture" type="file" ref={imageRef} />
-            <Button
-              onClick={handleImageSubmit}
-              size="default"
-              className="ml-2 h-10 w-10"
-            >
-              <SendHorizonal size={18} />
-            </Button>
-          </div> */}
         </div>
       </div>
     </div>
