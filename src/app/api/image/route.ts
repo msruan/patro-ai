@@ -1,4 +1,5 @@
-import { model } from "@/main";
+
+import { model } from "@/lib/model";
 import fs from "fs";
 import path from "path";
 

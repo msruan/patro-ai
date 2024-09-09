@@ -1,18 +1,25 @@
 'use client'
-import { useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   ChatBubble,
   ChatBubbleAvatar,
   ChatBubbleMessage,
 } from "@/components/ui/chat/chat-bubble";
-import { ChatInput } from "@/components/ui/chat/chat-input";
+
 import { ChatMessageList } from "@/components/ui/chat/chat-message-list";
+
+import { AutosizeTextAreaRef } from "@/components/ui/autosize-textarea";
+import { ChatInput } from "@/components/ui/chat/chat-input";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
+import { highlightWords } from "@/lib/utils";
 import { chat } from "@/services/chat";
 import { MountJson } from "@/utils/mountJson";
-import { CornerDownLeft, SendHorizonal } from "lucide-react";
+import DOMPurify from "dompurify";
+import { CornerDownLeft } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { refresh } from "./actions/refresh";
 
 const ia =
   "https://i.pinimg.com/736x/8f/87/39/8f8739fbfae6ccde444f6bcd69007276.jpg";
@@ -24,15 +31,20 @@ export type Message = {
   avatar_url: string;
   content: string;
   timestamp: Date;
+  isLoading?: boolean;
 };
 
 export default function Home() {
-  const inputRef = useRef({} as HTMLTextAreaElement);
+  useEffect(() => {
+    refresh().then();
+  }, []);
+  const inputRef = useRef<AutosizeTextAreaRef>(null);
   const [messages, setMessages] = useState([] as Message[]);
+  const [chatMode, setChatMode] = useState<"ads" | "general">("general");
   const imageRef = useRef({} as HTMLInputElement);
 
   async function handleSubmit() {
-    const value = inputRef.current.value;
+    const value = inputRef.current?.textArea.value;
     const imageFile = imageRef.current.files?.[0];
 
     if (imageFile) {
@@ -67,7 +79,7 @@ export default function Home() {
           avatar_url: ia,
           content: text,
           timestamp: new Date(),
-          variant: "received",
+          variant: "received"
         },
       ]);
     } else if (value) {
@@ -80,16 +92,23 @@ export default function Home() {
           timestamp: new Date(),
           variant: "sent",
         },
+        {
+          avatar_url: ia,
+          content: value,
+          timestamp: new Date(),
+          variant: "received",
+          isLoading: true,
+        },
       ];
       setMessages(newMessages);
-      inputRef.current.value = "";
+      inputRef.current!.textArea.value = "";
 
       const body: { text: string } = await chat(
-        JSON.stringify(MountJson(value, messages))
+        JSON.stringify(MountJson(value, messages, chatMode))
       );
 
       setMessages((oldValue) => [
-        ...oldValue,
+        ...oldValue.slice(0, oldValue.length - 1),
         {
           avatar_url: ia,
           content: body.text,
@@ -107,19 +126,34 @@ export default function Home() {
           {messages.map((message, index) => (
             <ChatBubble key={index} variant={message.variant}>
               <ChatBubbleAvatar src={message.avatar_url} />
-              <ChatBubbleMessage variant={message.variant}>
-                {message.content}
+              <ChatBubbleMessage
+                isLoading={message?.isLoading}
+                variant={message.variant}
+              >
+                <div
+                  dangerouslySetInnerHTML={{
+                    __html: DOMPurify.sanitize(highlightWords(message.content)),
+                  }}
+                />
               </ChatBubbleMessage>
             </ChatBubble>
           ))}
         </ChatMessageList>
 
         <ChatInput
-          onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
-          ref={inputRef}
-          placeholder="Ask me anything..."
+          maxLength={400}
+          maxHeight={200}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" && !e.shiftKey) {
+              e.preventDefault();
+              handleSubmit();
+            }
+          }}
+          textAreaRef={inputRef}
+          placeholder="Pergunte qualquer coisa..."
         />
-        <div className="flex flex-row w-full justify-between mb-12">
+
+        <div className="flex justify-between w-full  mb-12">
           <div className="flex flex-row items-center">
             <Label>Send picture</Label>
             <Input id="picture" type="file" ref={imageRef} className="mr-2" />
@@ -131,9 +165,20 @@ export default function Home() {
               size="default"
               className="ml-auto gap-1.5"
             >
-              Send Message
+              Enviar mensagem
               <CornerDownLeft className="size-3.5" />
             </Button>
+          </div>
+
+          <div className="flex items-center space-x-2">
+            <Switch
+              checked={chatMode === "ads"}
+              onCheckedChange={(e) =>
+                setChatMode(chatMode === "ads" ? "general" : "ads")
+              }
+              id="ads-mode"
+            />
+            <Label htmlFor="ads-mode">ADS</Label>
           </div>
         </div>
       </div>
