@@ -14,6 +14,9 @@ export const POST = async (request: Request) => {
 
     const chat: ChatSession = model.startChat({
       history: [...context, ...data.history],
+      generationConfig: {
+        temperature: 2,
+      },
     });
 
     let result = await chat.sendMessage(prompt);

@@ -6,10 +6,7 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function purgeChar(str: string, charToRemove: string) {
-  // Expressão regular para remover todas as ocorrências do caractere
-  const regex = new RegExp(charToRemove, "g");
-  // Substitui todas as ocorrências por uma string vazia
-  return str.replace(regex, "");
+  return str.split(charToRemove).join("");
 }
 
 export function highlightWords(text: string): string {
