@@ -40,6 +40,7 @@ export default function Home() {
   }, []);
   const inputRef = useRef<AutosizeTextAreaRef>(null);
   const [messages, setMessages] = useState([] as Message[]);
+  const [isLoading, setIsLoading] = useState(false);
   const [chatMode, setChatMode] = useState<"ads" | "general">("general");
   const imageRef = useRef({} as HTMLInputElement);
   const chatRef = useRef<HTMLDivElement>(null);
@@ -54,8 +55,9 @@ export default function Home() {
   async function handleSubmit() {
     const value = inputRef.current?.textArea.value;
     const imageFile = imageRef.current.files?.[0];
-
+    setIsLoading(true);
     if (imageFile) {
+
 
       const newMessages: Message[] = [
         ...messages,
@@ -138,7 +140,9 @@ export default function Home() {
 
 
     }
+    setIsLoading(false);
   }
+
 
   return (
     <div className="h-screen xl:mx-96 ">
@@ -167,7 +171,9 @@ export default function Home() {
           onKeyDown={(e) => {
             if (e.key === "Enter" && !e.shiftKey) {
               e.preventDefault();
-              handleSubmit();
+              if (!isLoading) {
+                handleSubmit();
+              }
             }
           }}
           textAreaRef={inputRef}
@@ -177,11 +183,12 @@ export default function Home() {
         <div className="flex justify-between w-full  mb-12">
           <div className="flex flex-row items-center">
             <Label>Send picture</Label>
-            <Input id="picture" type="file" ref={imageRef} className="mr-2" />
+            <Input  id="picture" type="file" ref={imageRef} className="mr-2" />
           </div>
 
           <div className="flex flex-row justify-center items-center h-10">
             <Button
+            disabled={isLoading}
               onClick={handleSubmit}
               size="default"
               className="ml-auto gap-1.5"
