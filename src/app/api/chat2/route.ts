@@ -9,7 +9,7 @@ export const POST = async (request: Request) => {
     console.log("chegou no bakc");
 
     const data: ChatRequest = await request.json();
-    const context =  await readContext(data.about === "ads");
+    const context = data.about === "ads" ?  await readContext() : [];
     const prompt = data.prompt;
 
     const chat: ChatSession = model.startChat({

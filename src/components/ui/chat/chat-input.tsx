@@ -8,6 +8,7 @@ interface ChatInputProps {
   className?: string;
   value?: string;
   maxLength: number;
+  disabled?: boolean;
   maxHeight: number;
   onKeyDown?: (event: React.KeyboardEvent<HTMLTextAreaElement>) => void;
   onChange?: (event: React.ChangeEvent<HTMLTextAreaElement>) => void;
@@ -22,6 +23,7 @@ const ChatInput = React.forwardRef<HTMLTextAreaElement, ChatInputProps>(
       maxHeight,
       className,
       value,
+      disabled,
       onKeyDown,
       onChange,
       textAreaRef,
@@ -31,6 +33,7 @@ const ChatInput = React.forwardRef<HTMLTextAreaElement, ChatInputProps>(
     ref
   ) => (
     <AutosizeTextarea
+    disabled={disabled}
       ref={textAreaRef}
       maxLength={maxLength}
       maxHeight={maxHeight}

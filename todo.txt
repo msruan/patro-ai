@@ -1,15 +1,14 @@
 TODO
 - Estilizar scrollbar
 - Refatorar o código e todo o input de imagem + texto
-- Consertar scroll pra ir pro final.
 - Modo escuro.
 - Ajeitar botao de input de imagem.
 - Pesquisar o jeito certo de passar instrucao pra gemini
 - Pesquisar limite de palavras
-- Bloquear input durante a reposta do queride
 - Validar o número de requisições e trocar por outro modelo quando chegar no limite
 
 DOING
+- Bloquear input durante a reposta do queride
 - Ajustar temperatura pra deixar mais criativo nas do ADS.
 (Bianca) - Upload de imagens e enviar pra Gemini
 
@@ -26,3 +25,4 @@ DONE
 
 DROP
 - Streaming para respostas mais rápidas
+- Consertar scroll pra ir pro final. (ficou pela metade)
