@@ -1,33 +1,44 @@
-import { gemini } from "@/lib/gemini";
-import { Part } from "@google/generative-ai";
 
-async function fileToGenerativePart(file) {
-  const base64EncodedData = await new Promise((resolve) => {
-    const reader = new FileReader();
-    reader.onloadend = () => resolve(reader.result.split(",")[1]);
-    reader.readAsDataURL(file);
-  });
+import { model } from "@/lib/model";
+import fs from "fs";
+import path from "path";
+
+function fileToGenerativePart(path: string, mimeType: string) {
   return {
-    inlineData: { data: base64EncodedData, mimeType: file.type },
+    inlineData: {
+      data: Buffer.from(fs.readFileSync(path)).toString("base64"),
+      mimeType,
+    },
   };
 }
 
+const uploadDir = path.join(process.cwd(), "/uploads");
+
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir, { recursive: true });
+}
+
 export const POST = async (request: Request) => {
-  console.log("foi pra função de post");
-  const imagePart = await fileToGenerativePart(request);
-  const prompt = "What you see in this image";
-
   try {
-    const result = await model.generateContent([prompt, imagePart as Part]);
-    const response = await result.response.text();
+    const formData = await request.formData();
+    const file = formData.get("file") as File;
+    const prompt = formData.get("prompt") as string;
+    
+    const filePath = path.join(uploadDir, file.name);
+    const buffer = Buffer.from(await file.arrayBuffer());
+    fs.writeFileSync(filePath, buffer);
 
-    return new Response(JSON.stringify({ response }), {
-      status: 200,
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    const imagePart = fileToGenerativePart(filePath, file.type);
+
+    const result = await model.generateContent([prompt, imagePart]);
+    const text = result.response.text();
+
+    return new Response(JSON.stringify({ text }));
   } catch (error) {
-    console.error("Error generating content:", error);
+    console.error(error);
+    return new Response(
+      JSON.stringify({ error: "Erro ao processar a requisição" }),
+      { status: 500 }
+    );
   }
 };
