@@ -1,15 +1,20 @@
 TODO
-- Streaming para respostas mais rápidas
-- Favicon
 - Estilizar scrollbar
-- Ajustar temperatura pra deixar mais criativo nas do ADS.
-- Consertar scroll pra ir pro final.
 - Refatorar o código e todo o input de imagem + texto
+- Consertar scroll pra ir pro final.
+- Modo escuro.
+- Ajeitar botao de input de imagem.
+- Pesquisar o jeito certo de passar instrucao pra gemini
+- Pesquisar limite de palavras
+- Bloquear input durante a reposta do queride
+- Validar o número de requisições e trocar por outro modelo quando chegar no limite
 
 DOING
+- Ajustar temperatura pra deixar mais criativo nas do ADS.
 (Bianca) - Upload de imagens e enviar pra Gemini
 
 DONE
+(OK) - Favicon
 (OK) - Animar fundo
 (Ruan) - Setar isLoading pro balaozinho da resposta ficar carregando
 (Ruan) - Trocar o input por uma textarea que aumente de tamanho
@@ -18,3 +23,6 @@ DONE
 (Ruan) - process.env não tá funcionando?
 (Ruan) - Consertar erro das mensagens que a gente envia sumindo
 (Meireles) - Fazer a logica pra botar contexto na IA
+
+DROP
+- Streaming para respostas mais rápidas
