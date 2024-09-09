@@ -1,15 +1,19 @@
 import { NextResponse } from "next/server";
-import { model } from "@/main";
+import { model } from "@/lib/model";
 import { ChatSession } from "@google/generative-ai";
 import { ChatRequest } from "@/utils/mountJson";
+import { context as readContext } from "@/lib/context";
 
 export const POST = async (request: Request) => {
   try {
-    const data: ChatRequest = await request.json();
-    const prompt = data.prompt;
     console.log("chegou no bakc");
+
+    const data: ChatRequest = await request.json();
+    const context = data.about === "ads" ? await readContext() : [];
+    const prompt = data.prompt;
+
     const chat: ChatSession = model.startChat({
-      history: data.history,
+      history: [...context, ...data.history],
     });
 
     let result = await chat.sendMessage(prompt);
@@ -24,6 +28,6 @@ export const POST = async (request: Request) => {
     });
   } catch (err) {
     console.log(err);
-    return NextResponse.error();
+    return NextResponse.json({ text: "Error" });
   }
 };
