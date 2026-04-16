@@ -12,7 +12,7 @@ interface ChatInputProps {
   maxHeight: number;
   onKeyDown?: (event: React.KeyboardEvent<HTMLTextAreaElement>) => void;
   onChange?: (event: React.ChangeEvent<HTMLTextAreaElement>) => void;
-  textAreaRef: RefObject<AutosizeTextAreaRef>;
+  textAreaRef: RefObject<AutosizeTextAreaRef | null>;
   placeholder?: string;
 }
 

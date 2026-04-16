@@ -20,8 +20,6 @@ export function MountJson(
     });
   });
 
-  //   console.log(response);
-
   return response;
 }
 // {
