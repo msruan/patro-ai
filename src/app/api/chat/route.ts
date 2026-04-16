@@ -26,12 +26,7 @@ export const POST = async (request: Request) => {
     // result = await chat.sendMessage("How many paws are in my house?");
     // console.log(result.response.text());
 
-    return new Response(JSON.stringify({ text }), {
-      status: 200,
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    return NextResponse.json({ text }, { status: 200, });
   } catch (err) {
     console.log(err);
     return NextResponse.error();

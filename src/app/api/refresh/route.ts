@@ -12,12 +12,7 @@ export const GET = async (request: Request) => {
     console.log(infos);
     jsonfile.writeFileSync("./context.json", infos);
 
-    return new Response("", {
-      status: 200,
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    return NextResponse.json({}, { status: 200, });
   } catch (err) {
     console.log(err);
     return NextResponse.error();

@@ -6,10 +6,10 @@ import { context as readContext } from "@/lib/context";
 
 export const POST = async (request: Request) => {
   try {
-    console.log("chegou no bakc");
+    console.log("/chat2 called!");
 
     const data: ChatRequest = await request.json();
-    const context = data.about === "ads" ?  await readContext() : [];
+    const context = data.about === "ads" ? await readContext() : [];
     const prompt = data.prompt;
 
     const chat: ChatSession = model.startChat({
@@ -23,12 +23,7 @@ export const POST = async (request: Request) => {
     const response = await result.response;
     const text = response.text();
 
-    return new Response(JSON.stringify({ text }), {
-      status: 200,
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    return NextResponse.json({ text }, { status: 200, });
   } catch (err) {
     console.log(err);
     return NextResponse.json({ text: "Error" });
