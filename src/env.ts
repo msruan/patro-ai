@@ -5,7 +5,11 @@ export const env = createEnv({
     server: {
         GOOGLE_GENERATIVE_AI_API_KEY: z.string(),
         API_URL: z.url(),
-        MONGO: z.string()
+        MONGO: z.string(),
+
+        OPENAI_API_MODEL: z.string(),
+        OPENAI_API_KEY: z.string(),
+        OPENAI_API_URL: z.string()
     },
     client: {
         NEXT_PUBLIC_ALLOW_ADS_MODE: z.string()

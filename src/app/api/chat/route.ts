@@ -1,34 +1,19 @@
+import { env } from "@/env";
+import { aiClient } from "@/lib/ai-client";
+import { ChatRequest } from "@/utils/mountJson";
 import { NextResponse } from "next/server";
-import { model } from "@/lib/model";
 
-export const POST = async (request: Request) => {
-  try {
-    // const model = await gemini();
-    const prompt = await request.text();
-    const result = await model.generateContent(prompt);
-    const response = await result.response;
-    const text = response.text();
+export async function POST(req: Request) {
+    //     let systemInstruction: string = readFileSync(
+    //   process.cwd() + "/system-instruction.txt"
+    // ).toString();
+    const data: ChatRequest = await req.json();
+    //   const context = data.about === "ads" ? await readContext() : [];
 
-    // const chat = model.startChat({
-    //   history: [
-    //     {
-    //       role: "user",
-    //       parts: [{ text: "Hello" }],
-    //     },
-    //     {
-    //       role: "model",
-    //       parts: [{ text: "Great to meet you. What would you like to know?" }],
-    //     },
-    //   ],
-    // });
-    // let result = await chat.sendMessage("I have 2 dogs in my house.");
-    // console.log(result.response.text());
-    // result = await chat.sendMessage("How many paws are in my house?");
-    // console.log(result.response.text());
+    const completion = await aiClient.chat.completions.create({
+        model: env.OPENAI_API_MODEL,
+        messages: data.messages
+    })
 
-    return NextResponse.json({ text }, { status: 200, });
-  } catch (err) {
-    console.log(err);
-    return NextResponse.error();
-  }
-};
+    return NextResponse.json({ text: completion.choices[0].message.content })
+}

@@ -1,18 +1,17 @@
-"use server";
+import { ChatRequest } from "@/utils/mountJson";
 
-import { env } from "@/env";
-
-export async function chat(body: string) {
+export async function chat(body: ChatRequest): Promise<{ text: string }> {
   try {
-    const res = await fetch(env.API_URL + "/chat2", {
-      body: body,
+    const res = await fetch("http://localhost:3000/api/chat", {
+      body: JSON.stringify(body),
       method: "POST",
     });
     if (res.ok) {
       return await res.json();
     }
+    return { text: "Sorry, error" }
   } catch (err) {
     console.error(err);
-    return undefined;
+    return { text: "Sorry, error" }
   }
 }

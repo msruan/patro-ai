@@ -126,7 +126,7 @@ export default function Home() {
 
     } else if (value) {
       inputRef.current!.textArea.value = "";
-      const newMessages: Message[] = [
+      const updatedHistory: Message[] = [
         ...messages,
         {
           avatar_url: Assets.userFace,
@@ -142,10 +142,10 @@ export default function Home() {
           isLoading: true,
         },
       ];
-      setMessages(newMessages);
+      setMessages(updatedHistory);
 
       const body: { text: string } = await chat(
-        JSON.stringify(MountJson(value, messages, chatMode))
+        MountJson(value, messages, chatMode)
       );
 
       setMessages((oldValue) => [
@@ -158,8 +158,6 @@ export default function Home() {
         },
       ]);
       scroll();
-
-
     }
     setIsLoading(false);
   }
