@@ -1,4 +1,5 @@
 "use client";
+
 import { Button } from "@/components/ui/button";
 import {
   ChatBubble,
@@ -18,13 +19,14 @@ import { chat } from "@/services/chat";
 import { MountJson } from "@/utils/mountJson";
 import DOMPurify from "dompurify";
 import { CornerDownLeft } from "lucide-react";
-import {  useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { refresh } from "./actions/refresh";
 
-const ia =
-  "https://i.pinimg.com/736x/8f/87/39/8f8739fbfae6ccde444f6bcd69007276.jpg";
-const asa =
-  "https://i.pinimg.com/564x/15/57/74/155774f070222683c5730fce24794328.jpg";
+const Assets = {
+  aiFace: "/images/ai-face.jpg",
+  userFace: "/images/user-face.jpg"
+} as const
+
 
 export type Message = {
   variant: "received" | "sent";
@@ -78,13 +80,13 @@ export default function Home() {
       const newMessages: Message[] = [
         ...messages,
         {
-          avatar_url: asa,
+          avatar_url: Assets.userFace,
           content: value || "",
           timestamp: new Date(),
           variant: "sent",
         },
         {
-          avatar_url: ia,
+          avatar_url: Assets.aiFace,
           content: value || "",
           timestamp: new Date(),
           variant: "received",
@@ -112,7 +114,7 @@ export default function Home() {
       setMessages((oldValue) => [
         ...oldValue.slice(0, oldValue.length - 1),
         {
-          avatar_url: ia,
+          avatar_url: Assets.aiFace,
           content: text,
           timestamp: new Date(),
           variant: "received",
@@ -126,13 +128,13 @@ export default function Home() {
       const newMessages: Message[] = [
         ...messages,
         {
-          avatar_url: asa,
+          avatar_url: Assets.userFace,
           content: value,
           timestamp: new Date(),
           variant: "sent",
         },
         {
-          avatar_url: ia,
+          avatar_url: Assets.aiFace,
           content: value,
           timestamp: new Date(),
           variant: "received",
@@ -148,7 +150,7 @@ export default function Home() {
       setMessages((oldValue) => [
         ...oldValue.slice(0, oldValue.length - 1),
         {
-          avatar_url: ia,
+          avatar_url: Assets.aiFace,
           content: body.text,
           timestamp: new Date(),
           variant: "received",
@@ -243,8 +245,6 @@ export default function Home() {
               <CornerDownLeft className="size-3.5" />
             </Button>
           </div>
-
-         
         </div>
       </div>
     </div>

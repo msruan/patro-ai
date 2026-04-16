@@ -11,22 +11,6 @@ const nextConfig: NextConfig = {
       fullUrl: process.env.NODE_ENV !== "production",
     },
   },
-  images: {
-    remotePatterns: [
-      {
-        protocol: "https",
-        hostname: "images.pexels.com",
-      },
-      {
-        protocol: "https",
-        hostname: "plus.unsplash.com",
-      },
-      {
-        protocol: "https",
-        hostname: "i.pinimg.com",
-      },
-    ],
-  },
   typescript: {
     ignoreBuildErrors: true,
   },
