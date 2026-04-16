@@ -1,7 +1,10 @@
 "use server";
+
+import { env } from "@/env";
+
 export async function refresh() {
   try {
-    const res = await fetch(process.env.API_URL + "/refresh");
+    const res = await fetch(env.API_URL + "/refresh");
     if (res.ok) {
       return 200;
     }

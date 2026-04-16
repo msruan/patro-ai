@@ -21,6 +21,7 @@ import DOMPurify from "dompurify";
 import { CornerDownLeft } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { refresh } from "./actions/refresh";
+import { env } from "@/env";
 
 const Assets = {
   aiFace: "/images/ai-face.jpg",
@@ -225,16 +226,18 @@ export default function Home() {
           </div>
 
           <div className="flex flex-row justify-center items-center">
-            <div className="flex items-center space-x-2 mr-10">
-              <Switch
-                checked={chatMode === "ads"}
-                onCheckedChange={(e) =>
-                  setChatMode(chatMode === "ads" ? "general" : "ads")
-                }
-                id="ads-mode"
-              />
-              <Label htmlFor="ads-mode">ADS</Label>
-            </div>
+            {env.NEXT_PUBLIC_ALLOW_ADS_MODE === true &&
+              <div className="flex items-center space-x-2 mr-10">
+                <Switch
+                  checked={chatMode === "ads"}
+                  onCheckedChange={(e) =>
+                    setChatMode(chatMode === "ads" ? "general" : "ads")
+                  }
+                  id="ads-mode"
+                />
+                <Label htmlFor="ads-mode">ADS</Label>
+              </div>
+            }
             <Button
               disabled={isLoading}
               onClick={handleSubmit}

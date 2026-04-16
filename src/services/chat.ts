@@ -1,7 +1,10 @@
 "use server";
+
+import { env } from "@/env";
+
 export async function chat(body: string) {
   try {
-    const res = await fetch(process.env.API_URL + "/chat2", {
+    const res = await fetch(env.API_URL + "/chat2", {
       body: body,
       method: "POST",
     });

@@ -1,3 +1,4 @@
+import { env } from "@/env";
 import mongoose from "mongoose";
 
 interface CustomConnection extends mongoose.Connection {
@@ -11,7 +12,7 @@ export async function connectToDb() {
       console.log("Using existing connection!");
       return;
     }
-    const db: typeof mongoose = await mongoose.connect(process.env.MONGO!);
+    const db: typeof mongoose = await mongoose.connect(env.MONGO);
     connection.isConnected = db.connections[0].readyState === 1;
     console.log("Database connected!");
   } catch (error) {

@@ -1,10 +1,12 @@
-import { GoogleGenerativeAI, Content } from "@google/generative-ai";
+import { Content } from "@google/generative-ai";
 import { GoogleAIFileManager } from "@google/generative-ai/server";
 import { readFileSync } from "fs";
 import { purgeChar } from "@/lib/utils";
+import { env } from "@/env";
+
 export async function context() {
   const fileManager = new GoogleAIFileManager(
-    process.env.GOOGLE_GENERATIVE_AI_API_KEY!
+    env.GOOGLE_GENERATIVE_AI_API_KEY
   );
   const pathToJsonFile = process.cwd() + "/context.json";
   const systemInstruction =
