@@ -2,7 +2,7 @@ import { env } from '@/env'
 import pino from 'pino'
 
 function getLogger() {
-    return pino({ level: env.NEXT_PUBLIC_PINO_LOG_LEVEL })
+    return pino({ level: env.NEXT_PUBLIC_PINO_LOG_LEVEL ?? 'info' })
 }
 
 export const logger = getLogger()
