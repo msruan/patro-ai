@@ -100,7 +100,7 @@ function useAiChat() {
             formData.append("file", imageFile);
             formData.append("prompt", value || "");
 
-            const res = await fetch("http://localhost:3000/api/image", {
+            const res = await fetch(`${env.NEXT_PUBLIC_API_URL}/image`, {
                 method: "POST",
                 body: formData,
             });
