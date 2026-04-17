@@ -36,9 +36,7 @@ export type Message = {
     isLoading?: boolean;
 };
 
-export function HomePage() {
-    useRefreshAiContext()
-
+function useAiChat() {
     const inputRef = useRef<AutosizeTextAreaRef>(null);
     const [messages, setMessages] = useState([] as Message[]);
     const [isLoading, setIsLoading] = useState(false);
@@ -46,6 +44,7 @@ export function HomePage() {
     const imageRef = useRef<HTMLInputElement>(null);
     const [imagePreview, setImagePreview] = useState<string | null>(null);
     const chatRef = useRef<HTMLDivElement>(null);
+
     function handleImageChange() {
         if (imageRef.current?.files?.[0]) {
             const file = imageRef.current.files[0];
@@ -159,6 +158,25 @@ export function HomePage() {
         setIsLoading(false);
     }
 
+    return {
+        chatRef,
+        imageRef,
+        inputRef,
+        imagePreview,
+        messages,
+        isCompletionPending: isLoading,
+        handleNewMesssage: handleSubmit,
+        handleImageChange,
+        chatMode: {
+            value: chatMode,
+            setValue: setChatMode
+        }
+    }
+}
+
+export function HomePage() {
+    useRefreshAiContext()
+    const { chatRef, imageRef, inputRef, messages, imagePreview, chatMode, isCompletionPending, handleNewMesssage, handleImageChange } = useAiChat()
 
     return (
         <div className="h-screen xl:mx-96 ">
@@ -190,8 +208,8 @@ export function HomePage() {
                         }
 
                         e.preventDefault();
-                        if (!isLoading) {
-                            handleSubmit();
+                        if (!isCompletionPending) {
+                            handleNewMesssage();
                         }
                     }}
                     textAreaRef={inputRef}
@@ -227,9 +245,9 @@ export function HomePage() {
                         {env.NEXT_PUBLIC_ALLOW_ADS_MODE === true &&
                             <div className="flex items-center space-x-2 mr-10">
                                 <Switch
-                                    checked={chatMode === "ads"}
+                                    checked={chatMode.value === "ads"}
                                     onCheckedChange={() =>
-                                        setChatMode(chatMode === "ads" ? "general" : "ads")
+                                        chatMode.setValue((previous) => previous === "ads" ? "general" : "ads")
                                     }
                                     id="ads-mode"
                                 />
@@ -237,8 +255,8 @@ export function HomePage() {
                             </div>
                         }
                         <Button
-                            disabled={isLoading}
-                            onClick={handleSubmit}
+                            disabled={isCompletionPending}
+                            onClick={handleNewMesssage}
                             size="default"
                             className="ml-auto gap-1.5"
                         >
