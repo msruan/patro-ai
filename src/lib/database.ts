@@ -16,8 +16,8 @@ export async function connectToDb() {
     const db: typeof mongoose = await mongoose.connect(env.MONGO);
     connection.isConnected = db.connections[0]!.readyState === 1;
     logger.info("Database connected!");
-  } catch (error) {
-    logger.error(error);
-    throw new Error("Error connecting to database!" + error);
+  } catch (err) {
+    logger.error(`Error connecting to database! ${err}`);
+    throw err;
   }
 }
