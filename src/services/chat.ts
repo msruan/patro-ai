@@ -1,3 +1,4 @@
+import { logger } from "@/lib/logger";
 import { ChatRequest } from "@/utils/mountJson";
 
 export async function chat(body: ChatRequest): Promise<{ text: string }> {
@@ -11,7 +12,7 @@ export async function chat(body: ChatRequest): Promise<{ text: string }> {
     }
     return { text: "Sorry, error" }
   } catch (err) {
-    console.error(err);
+    logger.error(err);
     return { text: "Sorry, error" }
   }
 }

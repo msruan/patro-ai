@@ -4,6 +4,7 @@ import path from "path";
 import { NextResponse } from "next/server";
 import os from 'os'
 import { aiModel } from "@/lib/ai-model";
+import { logger } from "@/lib/logger";
 
 async function fileToBase64Url(file: File): Promise<string> {
   const filePath = path.join(os.tmpdir(), file.name);
@@ -27,7 +28,7 @@ export const POST = async (request: Request) => {
 
     return NextResponse.json({ text });
   } catch (error) {
-    console.error(error);
+    logger.error(error);
     return NextResponse.json({}, { status: 500 });
   }
 };

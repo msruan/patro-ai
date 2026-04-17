@@ -14,8 +14,12 @@ export const env = createEnv({
         NEXT_PUBLIC_ALLOW_ADS_MODE: z.string()
             .default("false")
             .transform((bool) => bool.trim().toLowerCase() === "true"),
+        NEXT_PUBLIC_PINO_LOG_LEVEL: z.enum([
+            'fatal', 'error', 'warn', 'info', 'debug', 'trace'
+        ]).optional()
     },
     experimental__runtimeEnv: {
         NEXT_PUBLIC_ALLOW_ADS_MODE: process.env.NEXT_PUBLIC_ALLOW_ADS_MODE,
+        NEXT_PUBLIC_PINO_LOG_LEVEL: process.env.NEXT_PUBLIC_PINO_LOG_LEVEL
     }
 });
