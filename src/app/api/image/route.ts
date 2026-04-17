@@ -1,17 +1,9 @@
 
-import { model } from "@/lib/model";
 import fs from "fs";
 import path from "path";
 import { NextResponse } from "next/server";
-
-function fileToGenerativePart(path: string, mimeType: string) {
-  return {
-    inlineData: {
-      data: Buffer.from(fs.readFileSync(path)).toString("base64"),
-      mimeType,
-    },
-  };
-}
+import { aiClient } from "@/lib/ai-client";
+import { env } from "@/env";
 
 const uploadDir = path.join(process.cwd(), "/uploads");
 
@@ -26,20 +18,39 @@ export const POST = async (request: Request) => {
     const prompt = formData.get("prompt") as string;
 
     const filePath = path.join(uploadDir, file.name);
-    const buffer = Buffer.from(await file.arrayBuffer());
+    const buffer = await file.bytes();
     fs.writeFileSync(filePath, buffer);
 
-    const imagePart = fileToGenerativePart(filePath, file.type);
+    const base64Image = fs.readFileSync(filePath).toString("base64")
 
-    const result = await model.generateContent([prompt, imagePart]);
-    const text = result.response.text();
+    console.log()
+
+    const completion = await aiClient.chat.completions.create({
+      model: env.OPENAI_API_MODEL,
+      messages: [
+        {
+          role: 'user',
+          content: [
+            {
+              type: 'image_url',
+              image_url: {
+                url: `data:image/jpeg;base64,${base64Image}`
+              }
+            },
+            {
+              type: "text",
+              text: prompt
+            },
+          ]
+        },
+      ]
+    })
+
+    const text = completion.choices[0]?.message.content
 
     return NextResponse.json({ text });
   } catch (error) {
     console.error(error);
-    return NextResponse.json(
-      { error: "Erro ao processar a requisição" },
-      { status: 500 }
-    );
+    return NextResponse.json({}, { status: 500 });
   }
 };

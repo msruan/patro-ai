@@ -3,7 +3,6 @@ import * as z from "zod";
 
 export const env = createEnv({
     server: {
-        GOOGLE_GENERATIVE_AI_API_KEY: z.string(),
         API_URL: z.url(),
         MONGO: z.string(),
 

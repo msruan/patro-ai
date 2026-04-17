@@ -1,7 +1,6 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import Image from 'next/image'
 import {
   ChatBubble,
   ChatBubbleAvatar,
@@ -21,7 +20,7 @@ import { MountJson } from "@/utils/mountJson";
 import DOMPurify from "dompurify";
 import { CornerDownLeft } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { refresh } from "./actions/refresh";
+import { refresh } from "../actions/refresh";
 import { env } from "@/env";
 
 const Assets = {
@@ -214,8 +213,7 @@ export default function Home() {
             {imagePreview && (
               <div className="mb-4">
                 <div className="border-2 border-white shadow-xl rounded-lg ml-4 ">
-                  <Image
-                    priority
+                  <img
                     src={imagePreview}
                     alt="Image preview"
                     className="max-w-full h-16 rounded-sm"
