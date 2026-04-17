@@ -1,5 +1,4 @@
 import * as React from "react";
-import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import { AutosizeTextarea, AutosizeTextAreaRef } from "../autosize-textarea";
 import { RefObject } from "react";
@@ -33,7 +32,7 @@ const ChatInput = React.forwardRef<HTMLTextAreaElement, ChatInputProps>(
     ref
   ) => (
     <AutosizeTextarea
-    disabled={disabled}
+      disabled={disabled}
       ref={textAreaRef}
       maxLength={maxLength}
       maxHeight={maxHeight}

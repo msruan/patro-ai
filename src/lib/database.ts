@@ -13,7 +13,7 @@ export async function connectToDb() {
       return;
     }
     const db: typeof mongoose = await mongoose.connect(env.MONGO);
-    connection.isConnected = db.connections[0].readyState === 1;
+    connection.isConnected = db.connections[0]!.readyState === 1;
     console.log("Database connected!");
   } catch (error) {
     console.error(error);

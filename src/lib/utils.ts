@@ -14,7 +14,7 @@ export function highlightWords(text: string): string {
   const regex = /(^|\s)\*\*(.+?)\*\*($|\s)/g;
 
   // Função de substituição:
-  function replacer(match: string, p1: string, p2: string, p3: string) {
+  function replacer(_: string, p1: string, p2: string, p3: string) {
     return p1 + "<strong>" + p2 + "</strong>" + p3;
   }
 

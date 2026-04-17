@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import Image from 'next/image'
 import {
   ChatBubble,
   ChatBubbleAvatar,
@@ -213,7 +214,8 @@ export default function Home() {
             {imagePreview && (
               <div className="mb-4">
                 <div className="border-2 border-white shadow-xl rounded-lg ml-4 ">
-                  <img
+                  <Image
+                    priority
                     src={imagePreview}
                     alt="Image preview"
                     className="max-w-full h-16 rounded-sm"
@@ -228,7 +230,7 @@ export default function Home() {
               <div className="flex items-center space-x-2 mr-10">
                 <Switch
                   checked={chatMode === "ads"}
-                  onCheckedChange={(e) =>
+                  onCheckedChange={() =>
                     setChatMode(chatMode === "ads" ? "general" : "ads")
                   }
                   id="ads-mode"
