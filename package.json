@@ -5,7 +5,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "check:types": "tsc --noEmit --pretty"
   },
   "dependencies": {
     "@assistant-ui/react": "^0.5.40",
@@ -42,6 +43,7 @@
   "devDependencies": {
     "@types/dompurify": "^3.0.5",
     "@types/jsonfile": "^6.1.4",
+    "babel-plugin-react-compiler": "^1.0.0",
     "tailwindcss": "^3.4.10"
   },
   "pnpm": {

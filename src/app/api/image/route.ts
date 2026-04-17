@@ -2,7 +2,7 @@
 import { model } from "@/lib/model";
 import fs from "fs";
 import path from "path";
-import {context as readContext} from "@/lib/context"
+import { NextResponse } from "next/server";
 
 function fileToGenerativePart(path: string, mimeType: string) {
   return {
@@ -21,11 +21,10 @@ if (!fs.existsSync(uploadDir)) {
 
 export const POST = async (request: Request) => {
   try {
-    const context =  await readContext(false);
     const formData = await request.formData();
     const file = formData.get("file") as File;
     const prompt = formData.get("prompt") as string;
-    
+
     const filePath = path.join(uploadDir, file.name);
     const buffer = Buffer.from(await file.arrayBuffer());
     fs.writeFileSync(filePath, buffer);
@@ -35,11 +34,11 @@ export const POST = async (request: Request) => {
     const result = await model.generateContent([prompt, imagePart]);
     const text = result.response.text();
 
-    return new Response(JSON.stringify({ text }));
+    return NextResponse.json({ text });
   } catch (error) {
     console.error(error);
-    return new Response(
-      JSON.stringify({ error: "Erro ao processar a requisição" }),
+    return NextResponse.json(
+      { error: "Erro ao processar a requisição" },
       { status: 500 }
     );
   }
