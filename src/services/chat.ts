@@ -1,6 +1,6 @@
 import { env } from "@/env";
 import { logger } from "@/lib/logger";
-import { ChatRequest } from "@/utils/mountJson";
+import { ChatRequest } from "@/types";
 
 export async function chat(body: ChatRequest): Promise<{ text: string }> {
   try {

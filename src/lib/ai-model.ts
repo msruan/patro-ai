@@ -1,5 +1,5 @@
 import { env } from "@/env";
-import { ChatRequest } from "@/utils/mountJson";
+import { ChatRequest } from "@/types";
 import { readFileSync } from "fs";
 import { OpenAI } from "openai";
 

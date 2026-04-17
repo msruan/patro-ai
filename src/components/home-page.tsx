@@ -1,44 +1,18 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import {
-    ChatBubble,
-    ChatBubbleAvatar,
-    ChatBubbleMessage,
-} from "@/components/ui/chat/chat-bubble";
-
-import { ChatMessageList } from "@/components/ui/chat/chat-message-list";
-
 import { AutosizeTextAreaRef } from "@/components/ui/autosize-textarea";
-import { ChatInput } from "@/components/ui/chat/chat-input";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
 import { chat } from "@/services/chat";
-import { MountJson } from "@/utils/mountJson";
-import DOMPurify from "dompurify";
-import { CornerDownLeft } from "lucide-react";
 import { useRef, useState } from "react";
 import { env } from "@/env";
 import { useRefreshAiContext } from "@/hooks";
-
-const Assets = {
-    aiFace: "/images/ai-face.jpg",
-    userFace: "/images/user-face.jpg"
-} as const
-
-
-export type Message = {
-    variant: "received" | "sent";
-    avatarUrl: string;
-    content: string;
-    timestamp: Date;
-    isLoading?: boolean;
-};
+import { MessageList } from "./message-list";
+import { MessageInput } from "./message-input";
+import { Message, parseChat } from "@/types";
+import { Assets } from "@/assets";
 
 function useAiChat() {
     const inputRef = useRef<AutosizeTextAreaRef>(null);
-    const [messages, setMessages] = useState([] as Message[]);
+    const [messages, setMessages] = useState<Message[]>([]);
     const [isLoading, setIsLoading] = useState(false);
     const [chatMode, setChatMode] = useState<"ads" | "general">("general");
     const imageRef = useRef<HTMLInputElement>(null);
@@ -141,7 +115,7 @@ function useAiChat() {
             setMessages(updatedHistory);
 
             const body: { text: string } = await chat(
-                MountJson(value, messages, chatMode)
+                parseChat(value, messages, chatMode)
             );
 
             setMessages((oldValue) => [
@@ -181,90 +155,9 @@ export function HomePage() {
     return (
         <div className="h-screen xl:mx-96 ">
             <div className="h-full flex flex-col gap-3 px-8" >
-                <ChatMessageList ref={chatRef}>
-                    {messages.map((message, index) => (
-                        <ChatBubble key={index} variant={message.variant}>
-                            <ChatBubbleAvatar src={message.avatarUrl} />
-                            <ChatBubbleMessage
-                                isLoading={message?.isLoading}
-                                variant={message.variant}
-                            >
-                                <div
-                                    dangerouslySetInnerHTML={{
-                                        __html: DOMPurify.sanitize(message.content),
-                                    }}
-                                />
-                            </ChatBubbleMessage>
-                        </ChatBubble>
-                    ))}
-                </ChatMessageList>
+                <MessageList listRef={chatRef} messages={messages} />
+                <MessageInput imageRef={imageRef} inputRef={inputRef} imagePreview={imagePreview} chatMode={chatMode} isCompletionPending={isCompletionPending} handleNewMesssage={handleNewMesssage} handleImageChange={handleImageChange} />
 
-                <ChatInput
-                    maxLength={400}
-                    maxHeight={200}
-                    onKeyDown={(e) => {
-                        if (e.key !== "Enter" || e.shiftKey) {
-                            return;
-                        }
-
-                        e.preventDefault();
-                        if (!isCompletionPending) {
-                            handleNewMesssage();
-                        }
-                    }}
-                    textAreaRef={inputRef}
-                    placeholder="Pergunte qualquer coisa..."
-                />
-
-                <div className="flex justify-between w-full mb-12">
-                    <div className="flex flex-row">
-                        <div className="flex flex-row items-center h-16">
-                            <Input
-                                id="picture"
-                                type="file"
-                                accept=".jpg,.jpeg,.png,.gif,.webp"
-                                ref={imageRef}
-                                onChange={handleImageChange}
-                            />
-                        </div>
-
-                        {imagePreview && (
-                            <div className="mb-4">
-                                <div className="border-2 border-white shadow-xl rounded-lg ml-4 ">
-                                    <img
-                                        src={imagePreview}
-                                        alt="Image preview"
-                                        className="max-w-full h-16 rounded-sm"
-                                    />
-                                </div>
-                            </div>
-                        )}
-                    </div>
-
-                    <div className="flex flex-row justify-center items-center">
-                        {env.NEXT_PUBLIC_ALLOW_ADS_MODE === true &&
-                            <div className="flex items-center space-x-2 mr-10">
-                                <Switch
-                                    checked={chatMode.value === "ads"}
-                                    onCheckedChange={() =>
-                                        chatMode.setValue((previous) => previous === "ads" ? "general" : "ads")
-                                    }
-                                    id="ads-mode"
-                                />
-                                <Label htmlFor="ads-mode">ADS</Label>
-                            </div>
-                        }
-                        <Button
-                            disabled={isCompletionPending}
-                            onClick={handleNewMesssage}
-                            size="default"
-                            className="ml-auto gap-1.5"
-                        >
-                            Enviar mensagem
-                            <CornerDownLeft className="size-3.5" />
-                        </Button>
-                    </div>
-                </div>
             </div>
         </div>
     );
