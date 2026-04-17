@@ -1,0 +1,16 @@
+.editorconfig
+.gitattributes
+.github
+.gitignore
+.gitlab-ci.yml
+.idea
+.husky/
+.readthedocs.yml
+.travis.yml
+.git
+.envs/
+.env
+.env.example
+.next/
+node_modules/
+next-env.d.ts

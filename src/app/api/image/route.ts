@@ -1,46 +1,34 @@
 
-import { model } from "@/lib/model";
 import fs from "fs";
 import path from "path";
-import {context as readContext} from "@/lib/context"
+import { NextResponse } from "next/server";
+import os from 'os'
+import { aiModel } from "@/lib/ai-model";
+import { logger } from "@/lib/logger";
 
-function fileToGenerativePart(path: string, mimeType: string) {
-  return {
-    inlineData: {
-      data: Buffer.from(fs.readFileSync(path)).toString("base64"),
-      mimeType,
-    },
-  };
+async function fileToBase64Url(file: File): Promise<string> {
+  const filePath = path.join(os.tmpdir(), file.name);
+  const buffer = await file.bytes();
+  fs.writeFileSync(filePath, buffer);
+
+  return fs.readFileSync(filePath).toString("base64")
 }
 
-const uploadDir = path.join(process.cwd(), "/uploads");
-
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir, { recursive: true });
-}
 
 export const POST = async (request: Request) => {
   try {
-    const context =  await readContext(false);
     const formData = await request.formData();
-    const file = formData.get("file") as File;
+
     const prompt = formData.get("prompt") as string;
-    
-    const filePath = path.join(uploadDir, file.name);
-    const buffer = Buffer.from(await file.arrayBuffer());
-    fs.writeFileSync(filePath, buffer);
+    const file = formData.get("file") as File;
 
-    const imagePart = fileToGenerativePart(filePath, file.type);
+    const base64Image = await fileToBase64Url(file)
 
-    const result = await model.generateContent([prompt, imagePart]);
-    const text = result.response.text();
+    const text: string | null = await aiModel.makeImageCompletion(prompt, base64Image)
 
-    return new Response(JSON.stringify({ text }));
+    return NextResponse.json({ text });
   } catch (error) {
-    console.error(error);
-    return new Response(
-      JSON.stringify({ error: "Erro ao processar a requisição" }),
-      { status: 500 }
-    );
+    logger.error(error);
+    return NextResponse.json({}, { status: 500 });
   }
 };

@@ -1,22 +1,30 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import { cn } from "@/lib/utils";
+import { ReactNode } from "react";
 import "./globals.css";
-import "./styles.css";
+import './bg-gradient.css'
+import { RootProvider } from "./providers";
+
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "AI Patro",
-  description: "Seu melhor pior chatbot!",
+  title: "Patro AI",
+  description: "Seu chatbot com IA personalizado!",
 };
 
 export default function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode;
+  children: ReactNode;
 }>) {
   return (
     <html lang="en">
-      <body className={`gradient-bg ` + inter.className}>{children}</body>
+      <body className={cn("gradient-bg", inter.className, "font-sans")}>
+        <RootProvider>
+          {children}
+        </RootProvider>
+      </body>
     </html>
   );
 }

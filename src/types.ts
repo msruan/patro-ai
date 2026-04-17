@@ -1,11 +1,17 @@
-import { Message } from "@/app/page";
+export type Message = {
+    variant: "received" | "sent";
+    avatarUrl: string;
+    content: string;
+    timestamp: Date;
+    isLoading?: boolean;
+};
 
 export type ChatRequest = {
   messages: { role: "assistant" | "user"; content: string }[];
   about: string;
 };
 
-export function MountJson(
+export function parseChat(
   prompt: string,
   history: Message[],
   about: string = "general"

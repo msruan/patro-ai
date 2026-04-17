@@ -1,7 +1,5 @@
-import mongoose, { Schema } from "mongoose";
+import mongoose, { Model } from "mongoose";
 
-// Esquema flexível, sem definição de campos
-const InfoSchema = new Schema({}, { strict: false });
+const InfoSchema = new mongoose.Schema({}, { strict: false });
 
-// Exportando o modelo Info, reutilizando-o se já existir
-export const Info = mongoose.models?.Info || mongoose.model("Info", InfoSchema);
+export const Info = mongoose.models?.Info as Model<any> || mongoose.model("Info", InfoSchema);

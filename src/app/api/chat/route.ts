@@ -1,19 +1,19 @@
-import { env } from "@/env";
-import { aiClient } from "@/lib/ai-client";
-import { ChatRequest } from "@/utils/mountJson";
+import { aiModel } from "@/lib/ai-model";
+import { logger } from "@/lib/logger";
+import { ChatRequest } from "@/types";
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
-    //     let systemInstruction: string = readFileSync(
-    //   process.cwd() + "/system-instruction.txt"
-    // ).toString();
+  try {
+
     const data: ChatRequest = await req.json();
-    //   const context = data.about === "ads" ? await readContext() : [];
-
-    const completion = await aiClient.chat.completions.create({
-        model: env.OPENAI_API_MODEL,
-        messages: data.messages
-    })
-
-    return NextResponse.json({ text: completion.choices[0].message.content })
+  
+    const text = await aiModel.makeChatCompletion(data)
+  
+    return NextResponse.json({ text })
+  } 
+  catch(err){
+    logger.error(err)
+    return NextResponse.json({}, { status: 500 })
+  } 
 }
