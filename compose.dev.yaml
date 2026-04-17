@@ -1,0 +1,17 @@
+services:
+  app:
+    container_name: patro_ai_local_next
+    build:
+      context: .
+      dockerfile: ./dev.Dockerfile
+    env_file:
+      - .env
+    ports:
+      - '3000:3000'
+    restart: always
+    volumes:
+      - .:/app
+      - patro_ai_node_modules:/app/node_modules
+
+volumes:
+  patro_ai_node_modules:

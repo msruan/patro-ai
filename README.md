@@ -73,6 +73,16 @@ pnpm dev
 
 The application will be available at `http://localhost:3000`.
 
+### Running with Docker
+
+You can also run the development environment using Docker Compose. This will start the Next.js app in a container:
+
+```bash
+docker compose -f compose.dev.yaml up --build
+```
+
+The application will be available at `http://localhost:3000`.
+
 ## Project Structure
 
 ```
